@@ -6,14 +6,15 @@ import { SOURCES } from '../lib/sources';
 
 const description =
   'La liste complète et à jour des organismes officiels que Cout Logement peut citer, avec le millésime en ligne et la fréquence de mise à jour de chacun.';
-const updatedDate = new Date('2026-09-21');
+const updatedDate = new Date('2026-09-09');
 ---
 
 <BaseLayout>
   <SEO slot="head" title="Sources officielles" description={description} path="/sources/" />
-  <article class="prose prose-neutral max-w-none">
-    <p class="text-sm font-medium text-accent">Mis à jour le {formatDateFr(updatedDate)}</p>
-    <h1 class="mt-2 text-3xl font-semibold">Sources officielles</h1>
+  <article class="article article-wide">
+    <p class="badge">Mis à jour le {formatDateFr(updatedDate)}</p>
+    <h1 class="mt-4 text-3xl font-semibold sm:text-4xl">Sources officielles</h1>
+    <div class="brand-bar mt-5 max-w-24"></div>
 
     <p>
       Voici la liste complète des organismes dont les données ou les textes peuvent être cités
@@ -23,26 +24,26 @@ const updatedDate = new Date('2026-09-21');
       <a href="/methodologie/">Méthodologie</a>.
     </p>
 
-    <div class="overflow-x-auto">
-      <table class="mt-6 w-full border-collapse text-left text-sm">
+    <div class="table-wrap mt-8">
+      <table class="data-table">
         <thead>
-          <tr class="border-b border-border">
-            <th class="py-2 pr-4">Source</th>
-            <th class="py-2 pr-4">Organisme</th>
-            <th class="py-2 pr-4">Ce qu'elle fournit</th>
-            <th class="py-2 pr-4">Millésime en ligne</th>
-            <th class="py-2">Fréquence</th>
+          <tr>
+            <th>Source</th>
+            <th>Organisme</th>
+            <th>Ce qu'elle fournit</th>
+            <th>Millésime en ligne</th>
+            <th>Fréquence</th>
           </tr>
         </thead>
         <tbody>
           {
             SOURCES.map((source) => (
-              <tr class="border-b border-border align-top">
-                <td class="py-2 pr-4 font-medium">{source.nom}</td>
-                <td class="py-2 pr-4 text-text-muted">{source.organisme}</td>
-                <td class="py-2 pr-4 text-text-muted">{source.fournit}</td>
-                <td class="py-2 pr-4 text-text-muted">{source.millesime}</td>
-                <td class="py-2 text-text-muted">{source.frequence}</td>
+              <tr>
+                <td class="font-medium">{source.nom}</td>
+                <td class="text-text-muted">{source.organisme}</td>
+                <td class="text-text-muted">{source.fournit}</td>
+                <td class="text-text-muted">{source.millesime}</td>
+                <td class="text-text-muted">{source.frequence}</td>
               </tr>
             ))
           }

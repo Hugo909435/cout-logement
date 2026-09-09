@@ -5,14 +5,15 @@ import { formatDateFr } from '../lib/dates';
 
 const description =
   'Les jeux de données officiels utilisés par Cout Logement, leur millésime, leur fréquence de mise à jour et les limites que nous assumons.';
-const updatedDate = new Date('2026-09-21');
+const updatedDate = new Date('2026-09-09');
 ---
 
 <BaseLayout>
   <SEO slot="head" title="Méthodologie : d'où viennent nos chiffres" description={description} path="/methodologie/" />
-  <article class="prose prose-neutral max-w-none">
-    <p class="text-sm font-medium text-accent">Mis à jour le {formatDateFr(updatedDate)}</p>
-    <h1 class="mt-2 text-3xl font-semibold">Méthodologie : d'où viennent nos chiffres</h1>
+  <article class="article">
+    <p class="badge">Mis à jour le {formatDateFr(updatedDate)}</p>
+    <h1 class="mt-4 text-3xl font-semibold sm:text-4xl">Méthodologie : d'où viennent nos chiffres</h1>
+    <div class="brand-bar mt-5 max-w-24"></div>
 
     <p>
       Cout Logement ne produit aucune donnée. Nous reprenons des jeux de données publics,
@@ -107,9 +108,11 @@ const updatedDate = new Date('2026-09-21');
         mise à jour en haut de cette page avant de vous y fier pour une décision.
       </li>
       <li>
-        À ce stade, aucune page par commune n'est encore publiée sur ce site : cette méthodologie
-        décrit les sources et le traitement que nous appliquerons dès leur mise en ligne, avant
-        la publication du premier article de contenu.
+        Les pages par commune ne sont pour l'instant en ligne que pour un premier lot de
+        départements (Val-de-Marne et Territoire de Belfort), et ne couvrent que la taxe
+        foncière (fichier REI) : ni les DVF, ni les DPE, ni les aides à la rénovation ne sont
+        encore intégrés à ces pages. Le reste du territoire s'ajoute progressivement, dans les
+        conditions décrites plus haut.
       </li>
     </ul>
 

@@ -48,13 +48,14 @@ const description = `Taxe foncière à ${commune.nom} (${commune.code}) : taux d
   <p class="text-sm text-text-muted">
     {departement && (
       <>
-        <a href="/departement/" class="hover:text-primary">Départements</a> ·{' '}
-        <a href={`/departement/${departement.slug}/`} class="hover:text-primary">{departement.nom}</a>
+        <a href="/departement/" class="nav-link">Départements</a> ·{' '}
+        <a href={`/departement/${departement.slug}/`} class="nav-link">{departement.nom}</a>
       </>
     )}
   </p>
-  <h1 class="mt-2 text-3xl font-semibold">Taxe foncière à {commune.nom}</h1>
-  <p class="mt-4 max-w-2xl text-text-muted">{description}</p>
+  <h1 class="mt-3 text-3xl font-semibold sm:text-4xl">Taxe foncière à {commune.nom}</h1>
+  <div class="brand-bar mt-5 max-w-24"></div>
+  <p class="lede mt-5">{description}</p>
   {commune.population && (
     <p class="mt-2 text-sm text-text-muted">
       {formatNombre(commune.population)} habitants · code INSEE {commune.code}
@@ -62,15 +63,15 @@ const description = `Taxe foncière à ${commune.nom} (${commune.code}) : taux d
     </p>
   )}
 
-  <section class="mt-8 grid gap-4 sm:grid-cols-2">
-    <div class="rounded border border-border p-5">
-      <p class="text-sm text-text-muted">Taux net TFPB {REI_MILLESIME}</p>
-      <p class="mt-1 text-2xl font-semibold">{formatTaux(commune.fiscalite.tfpbTauxNet)}</p>
+  <section class="mt-10 grid gap-5 sm:grid-cols-2">
+    <div class="stat">
+      <p class="stat-label">Taux net TFPB {REI_MILLESIME}</p>
+      <p class="stat-value">{formatTaux(commune.fiscalite.tfpbTauxNet)}</p>
     </div>
     {commune.fiscalite.tfpbProduitReel !== null && (
-      <div class="rounded border border-border p-5">
-        <p class="text-sm text-text-muted">Produit perçu par la commune</p>
-        <p class="mt-1 text-2xl font-semibold">{formatEuros(commune.fiscalite.tfpbProduitReel)}</p>
+      <div class="stat">
+        <p class="stat-label">Produit perçu par la commune</p>
+        <p class="stat-value">{formatEuros(commune.fiscalite.tfpbProduitReel)}</p>
       </div>
     )}
   </section>
@@ -85,8 +86,8 @@ const description = `Taxe foncière à ${commune.nom} (${commune.code}) : taux d
 
   {comparables.length > 0 && (
     <section class="mt-10">
-      <h2 class="text-xl font-semibold">Communes voisines par le taux</h2>
-      <ul class="mt-4 space-y-2 text-sm">
+      <h2 class="section-title text-xl font-semibold">Communes voisines par le taux</h2>
+      <ul class="surface mt-5 space-y-3 text-sm">
         {comparables.map((c) => (
           <li>
             <a href={`/commune/${c.slug}/`} class="text-primary hover:underline">{c.nom}</a>

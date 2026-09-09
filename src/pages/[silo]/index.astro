@@ -22,16 +22,18 @@ const satellites = (await getCollection('blog', ({ data }) => !data.draft && dat
 
 <BaseLayout>
   <SEO slot="head" title={meta.label} description={meta.description} path={`/${silo}/`} />
-  <h1 class="text-3xl font-semibold">{meta.label}</h1>
-  <p class="mt-2 text-text-muted">{meta.description}</p>
+  <p class="eyebrow">Silo</p>
+  <h1 class="mt-3 text-3xl font-semibold sm:text-4xl">{meta.label}</h1>
+  <div class="brand-bar mt-5 max-w-24"></div>
+  <p class="lede mt-5">{meta.description}</p>
 
-  <section class="mt-8">
-    <h2 class="text-xl font-semibold">Piliers</h2>
+  <section class="mt-12">
+    <h2 class="section-title text-xl font-semibold">Piliers</h2>
     {
       piliers.length === 0 ? (
         <p class="mt-2 text-sm text-text-muted">Aucun pilier publié pour le moment.</p>
       ) : (
-        <ul class="mt-4 space-y-2">
+        <ul class="surface mt-5 space-y-3">
           {piliers.map((pilier) => (
             <li>
               <a href={`/${silo}/${pilier.id}/`} class="text-primary hover:underline">
@@ -44,13 +46,13 @@ const satellites = (await getCollection('blog', ({ data }) => !data.draft && dat
     }
   </section>
 
-  <section class="mt-8">
-    <h2 class="text-xl font-semibold">Articles</h2>
+  <section class="mt-12">
+    <h2 class="section-title text-xl font-semibold">Articles</h2>
     {
       satellites.length === 0 ? (
         <p class="mt-2 text-sm text-text-muted">Aucun article publié pour le moment.</p>
       ) : (
-        <ul class="mt-4 space-y-2">
+        <ul class="surface mt-5 space-y-3">
           {satellites.map((post) => (
             <li>
               <a href={`/${silo}/${post.id}/`} class="text-primary hover:underline">
