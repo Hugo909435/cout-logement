@@ -1,0 +1,81 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SEO from '../components/SEO.astro';
+import { formatDateFr } from '../lib/dates';
+import { AUTHOR_NAME, AUTHOR_EMAIL } from '../lib/author';
+
+const description =
+  'Mentions légales, hébergement et politique de confidentialité de Cout Logement, ainsi que l’avertissement sur la portée des informations publiées.';
+const updatedDate = new Date('2026-09-21');
+---
+
+<BaseLayout>
+  <SEO slot="head" title="Mentions légales" description={description} path="/mentions-legales/" />
+  <article class="article">
+    <span class="inline-flex items-center gap-2 rounded-full border border-brown/30 bg-brown/10 px-3 py-1 text-xs font-medium text-brown-strong">
+      Mis à jour le {formatDateFr(updatedDate)}
+    </span>
+    <h1 class="mt-4 text-3xl font-semibold">Mentions légales</h1>
+    <div class="brand-bar mt-4 max-w-24"></div>
+
+    <h2>Éditeur du site</h2>
+    <p>
+      Le site Cout Logement (coutlogement.fr) est édité à titre personnel par {AUTHOR_NAME}.
+      Pour toute question relative à l'édition du site, contactez
+      <a href={`mailto:${AUTHOR_EMAIL}`}>{AUTHOR_EMAIL}</a>. Les coordonnées complètes de
+      l'éditeur (adresse postale, statut juridique) sont communiquées sur demande, conformément
+      à la loi n° 2004-575 du 21 juin 2004 pour la confiance dans l'économie numérique.
+    </p>
+
+    <h2>Hébergement</h2>
+    <p>
+      Ce site est hébergé par Hostinger, en hébergement mutualisé. La raison sociale complète,
+      l'adresse du siège et les coordonnées de l'hébergeur seront précisées ici avant la mise en
+      ligne définitive du site.
+    </p>
+
+    <h2>Traitement des données personnelles</h2>
+    <p>
+      Ce site ne collecte aucune donnée personnelle par formulaire. Il n'utilise, à ce jour,
+      aucun outil de mesure d'audience ni aucun cookie non essentiel. Si un outil d'analytics
+      était ajouté, cette page serait mise à jour au préalable pour décrire les données
+      collectées, leur finalité et vos droits, conformément au règlement général sur la
+      protection des données (RGPD) et à la loi Informatique et Libertés.
+    </p>
+    <p>
+      Si vous nous écrivez par e-mail, votre adresse et le contenu de votre message sont utilisés
+      uniquement pour vous répondre, et ne sont ni conservés au-delà de ce qui est nécessaire ni
+      transmis à un tiers. Vous pouvez demander l'accès, la rectification ou la suppression de ces
+      données en écrivant à <a href={`mailto:${AUTHOR_EMAIL}`}>{AUTHOR_EMAIL}</a>.
+    </p>
+
+    <h2>Cookies</h2>
+    <p>
+      Aucun cookie de mesure d'audience ou publicitaire n'est déposé par ce site à ce jour.
+    </p>
+
+    <h2>Propriété intellectuelle</h2>
+    <p>
+      Les textes et mises en forme publiés sur ce site sont la propriété de leur éditeur. Les
+      données sous-jacentes proviennent des organismes publics listés sur la page
+      <a href="/sources/">Sources officielles</a> et restent soumises aux licences de
+      réutilisation qu'ils publient.
+    </p>
+
+    <h2>Avertissement</h2>
+    <div class="callout">
+      <p>
+        <strong>
+          Les informations publiées sur Cout Logement sont issues de sources officielles et
+          fournies à titre informatif. Elles ne constituent pas un conseil fiscal, financier ou
+          juridique personnalisé.
+        </strong>
+      </p>
+      <p>
+        Pour toute décision qui vous concerne, rapprochez-vous de l'administration compétente ou
+        d'un professionnel qualifié. La méthode et les limites de ces informations sont détaillées
+        sur la page <a href="/methodologie/">Méthodologie</a>.
+      </p>
+    </div>
+  </article>
+</BaseLayout>

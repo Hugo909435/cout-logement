@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SEO from '../../components/SEO.astro';
+import { getAllDepartements, getDepartementAggregats, REI_MILLESIME } from '../../lib/fiscaliteData';
+import { formatTaux, formatNombre } from '../../lib/numbers';
+
+const description =
+  "La taxe foncière commune par commune, agrégée par département : taux moyen, taux médian et classement, calculés à partir du fichier REI de la DGFiP.";
+
+const departements = getAllDepartements().map((d) => ({
+  ...d,
+  aggregats: getDepartementAggregats(d.code),
+}));
+---
+
+<BaseLayout>
+  <SEO
+    slot="head"
+    title="La taxe foncière par département"
+    description={description}
+    path="/departement/"
+    breadcrumbs={[
+      { name: 'Accueil', path: '/' },
+      { name: 'Départements', path: '/departement/' },
+    ]}
+  />
+  <h1 class="text-3xl font-semibold">La taxe foncière par département</h1>
+  <p class="mt-4 max-w-2xl text-text-muted">{description}</p>
+  <p class="mt-2 text-sm text-text-muted">
+    Millésime {REI_MILLESIME} · voir la <a href="/methodologie/" class="text-primary hover:underline">méthodologie</a>.
+  </p>
+
+  <div class="mt-8 overflow-x-auto">
+    <table class="w-full border-collapse text-left text-sm">
+      <thead>
+        <tr class="border-b border-border">
+          <th class="py-2 pr-4">Département</th>
+          <th class="py-2 pr-4">Communes référencées</th>
+          <th class="py-2 pr-4">Taux TFPB moyen</th>
+          <th class="py-2">Taux TFPB médian</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          departements.map((d) => (
+            <tr class="border-b border-border align-top">
+              <td class="py-2 pr-4 font-medium">
+                <a href={`/departement/${d.slug}/`} class="text-primary hover:underline">
+                  {d.nom} ({d.code})
+                </a>
+              </td>
+              <td class="py-2 pr-4 text-text-muted">{formatNombre(d.aggregats.nbCommunesDonneesCompletes)}</td>
+              <td class="py-2 pr-4 text-text-muted">
+                {d.aggregats.nbCommunesDonneesCompletes > 0 ? formatTaux(d.aggregats.tauxMoyen) : '—'}
+              </td>
+              <td class="py-2 text-text-muted">
+                {d.aggregats.nbCommunesDonneesCompletes > 0 ? formatTaux(d.aggregats.tauxMedian) : '—'}
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+</BaseLayout>

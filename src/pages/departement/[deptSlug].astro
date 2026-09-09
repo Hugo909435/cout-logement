@@ -1,0 +1,135 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SEO from '../../components/SEO.astro';
+import {
+  getAllDepartements,
+  getDepartementAggregats,
+  getCommunesFiscalesForDepartement,
+  isCommunePublished,
+  REI_MILLESIME,
+} from '../../lib/fiscaliteData';
+import { formatTaux, formatNombre } from '../../lib/numbers';
+
+export async function getStaticPaths() {
+  return getAllDepartements().map((d) => ({ params: { deptSlug: d.slug }, props: { departement: d } }));
+}
+
+const { departement } = Astro.props;
+const aggregats = getDepartementAggregats(departement.code);
+const communes = getCommunesFiscalesForDepartement(departement.code);
+const top5 = communes.slice(0, 5);
+const bottom5 = communes.slice(-5).reverse();
+
+const description = `Taxe foncière dans le ${departement.nom} (${departement.code}) : taux moyen, taux médian et classement des ${aggregats.nbCommunesDonneesCompletes} communes référencées, d'après le fichier REI ${REI_MILLESIME} de la DGFiP.`;
+---
+
+<BaseLayout>
+  <SEO
+    slot="head"
+    title={`Taxe foncière dans le ${departement.nom}`}
+    description={description}
+    path={`/departement/${departement.slug}/`}
+    breadcrumbs={[
+      { name: 'Accueil', path: '/' },
+      { name: 'Départements', path: '/departement/' },
+      { name: departement.nom, path: `/departement/${departement.slug}/` },
+    ]}
+  />
+  <p class="text-sm text-text-muted">
+    <a href="/departement/" class="hover:text-primary">Départements</a>
+  </p>
+  <h1 class="mt-2 text-3xl font-semibold">Taxe foncière dans le {departement.nom}</h1>
+  <p class="mt-4 max-w-2xl text-text-muted">{description}</p>
+
+  {
+    aggregats.nbCommunesDonneesCompletes === 0 ? (
+      <p class="mt-8 text-sm text-text-muted">
+        Aucune commune de ce département ne dispose d'un taux exploitable dans le fichier REI {REI_MILLESIME}
+        (secret statistique ou absence de fiscalité communale propre).
+      </p>
+    ) : (
+      <>
+        <section class="mt-8 grid gap-4 sm:grid-cols-2">
+          <div class="rounded border border-border p-5">
+            <p class="text-sm text-text-muted">Taux moyen des communes du département</p>
+            <p class="mt-1 text-2xl font-semibold">{formatTaux(aggregats.tauxMoyen)}</p>
+            <p class="mt-1 text-xs text-text-muted">Moyenne simple sur les communes, non pondérée par la population.</p>
+          </div>
+          <div class="rounded border border-border p-5">
+            <p class="text-sm text-text-muted">Taux médian des communes du département</p>
+            <p class="mt-1 text-2xl font-semibold">{formatTaux(aggregats.tauxMedian)}</p>
+          </div>
+        </section>
+
+        <p class="mt-4 text-sm text-text-muted">
+          {formatNombre(aggregats.nbCommunesDonneesCompletes)} communes sur {formatNombre(aggregats.nbCommunesReferencees)}{' '}
+          référencées par l'INSEE ont un taux exploitable dans le REI {REI_MILLESIME} ; les autres sont exclues de ce
+          calcul (secret statistique DGFiP, ou commune sans fiscalité propre — voir la{' '}
+          <a href="/methodologie/" class="text-primary hover:underline">méthodologie</a>).
+        </p>
+
+        <section class="mt-10">
+          <h2 class="text-xl font-semibold">Communes où le taux est le plus élevé</h2>
+          <div class="mt-4 overflow-x-auto">
+            <table class="w-full border-collapse text-left text-sm">
+              <thead>
+                <tr class="border-b border-border">
+                  <th class="py-2 pr-4">Commune</th>
+                  <th class="py-2">Taux TFPB</th>
+                </tr>
+              </thead>
+              <tbody>
+                {top5.map((c) => (
+                  <tr class="border-b border-border">
+                    <td class="py-2 pr-4">
+                      {isCommunePublished(c) ? (
+                        <a href={`/commune/${c.slug}/`} class="text-primary hover:underline">{c.nom}</a>
+                      ) : (
+                        c.nom
+                      )}
+                    </td>
+                    <td class="py-2 font-medium">{formatTaux(c.fiscalite.tfpbTauxNet)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="mt-10">
+          <h2 class="text-xl font-semibold">Communes où le taux est le plus bas</h2>
+          <div class="mt-4 overflow-x-auto">
+            <table class="w-full border-collapse text-left text-sm">
+              <thead>
+                <tr class="border-b border-border">
+                  <th class="py-2 pr-4">Commune</th>
+                  <th class="py-2">Taux TFPB</th>
+                </tr>
+              </thead>
+              <tbody>
+                {bottom5.map((c) => (
+                  <tr class="border-b border-border">
+                    <td class="py-2 pr-4">
+                      {isCommunePublished(c) ? (
+                        <a href={`/commune/${c.slug}/`} class="text-primary hover:underline">{c.nom}</a>
+                      ) : (
+                        c.nom
+                      )}
+                    </td>
+                    <td class="py-2 font-medium">{formatTaux(c.fiscalite.tfpbTauxNet)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </>
+    )
+  }
+
+  <p class="mt-10 border-t border-border pt-4 text-sm text-text-muted">
+    Le taux affiché est le taux net de taxe foncière sur les propriétés bâties (TFPB) appliqué par la commune,
+    tel que recensé par la DGFiP (fichier REI, millésime {REI_MILLESIME}). Pour comprendre ce que recouvre ce
+    chiffre, voir <a href="/fiscalite-locale/comprendre-la-taxe-fonciere/" class="text-primary hover:underline">Comprendre la taxe foncière</a>.
+  </p>
+</BaseLayout>

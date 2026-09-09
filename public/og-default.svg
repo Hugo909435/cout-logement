@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0f4c52" />
+  <rect x="0" y="0" width="1200" height="630" fill="none" stroke="#b5651d" stroke-width="12" />
+  <text x="80" y="330" font-family="Georgia, serif" font-size="72" fill="#fbfaf7">Cout Logement</text>
+  <text x="80" y="400" font-family="Segoe UI, sans-serif" font-size="32" fill="#e3a15c">coutlogement.fr</text>
+</svg>

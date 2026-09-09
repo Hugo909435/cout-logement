@@ -1,0 +1,82 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SEO from '../components/SEO.astro';
+import { SILO_META, SILO_ORDER } from '../lib/silos';
+
+const title = 'Cout Logement : fiscalité, énergie et aides du logement';
+const description =
+  'Cout Logement analyse la fiscalité locale, l’énergie du logement et les aides à la rénovation pour aider chaque foyer à comprendre le coût réel de son logement.';
+
+const websiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Cout Logement',
+  url: Astro.site,
+  description,
+  inLanguage: 'fr-FR',
+  publisher: {
+    '@type': 'Organization',
+    name: 'Cout Logement',
+    url: Astro.site,
+  },
+};
+---
+
+<BaseLayout>
+  <SEO
+    slot="head"
+    title={title}
+    description={description}
+    path="/"
+    appendSiteName={false}
+  />
+  <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(websiteJsonLd)} />
+
+  <h1 class="text-4xl font-semibold">Comprendre le coût réel de votre logement</h1>
+  <p class="mt-4 max-w-2xl text-text-muted">{description}</p>
+  <p class="mt-4 max-w-2xl text-text-muted">
+    Le site est en cours de construction. Les <a href="/departement/" class="text-primary hover:underline">pages par département et par commune</a>
+    sont en ligne pour un premier lot de départements, et s'étendent progressivement au reste
+    de la France. Les premiers articles arrivent dans les trois thématiques ci-dessous. La
+    méthodologie et la liste des sources déjà utilisées sont, elles, en ligne dès aujourd'hui.
+  </p>
+
+  <section class="mt-10">
+    <h2 class="text-xl font-semibold">Ce que couvre le site</h2>
+    <div class="mt-4 grid gap-6 sm:grid-cols-3">
+      {
+        SILO_ORDER.map((silo) => (
+          <a
+            href={`/${silo}/`}
+            class="rounded border border-border p-5 hover:border-primary"
+          >
+            <h3 class="text-lg font-semibold">{SILO_META[silo].label}</h3>
+            <p class="mt-2 text-sm text-text-muted">{SILO_META[silo].description}</p>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="mt-10">
+    <h2 class="text-xl font-semibold">Pourquoi faire confiance à ces chiffres</h2>
+    <p class="mt-2 max-w-2xl text-text-muted">
+      Cout Logement ne produit aucune donnée : nous reprenons des jeux de données publics et
+      les mettons en forme. Chaque chiffre est traçable jusqu'à sa source.
+    </p>
+    <ul class="mt-4 space-y-2 text-sm">
+      <li>
+        <a href="/methodologie/" class="text-primary hover:underline">Méthodologie</a>
+        <span class="text-text-muted"> — les jeux de données utilisés et leurs limites.</span>
+      </li>
+      <li>
+        <a href="/sources/" class="text-primary hover:underline">Sources officielles</a>
+        <span class="text-text-muted"> — la liste des organismes cités, à jour.</span>
+      </li>
+      <li>
+        <a href="/auteur/" class="text-primary hover:underline">Qui écrit ce site</a>
+        <span class="text-text-muted"> — qui maintient ces pages et comment nous contacter.</span>
+      </li>
+    </ul>
+  </section>
+</BaseLayout>

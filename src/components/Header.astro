@@ -1,0 +1,23 @@
+---
+import { SILO_META, SILO_ORDER } from '../lib/silos';
+import ThemeToggle from './ThemeToggle.astro';
+---
+
+<header class="border-b border-border">
+  <div class="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-4 px-4 py-4">
+    <a href="/" class="font-display text-xl font-semibold text-text">
+      Cout Logement
+    </a>
+    <nav class="flex flex-wrap items-center gap-4 text-sm">
+      {
+        SILO_ORDER.map((silo) => (
+          <a href={`/${silo}/`} class="text-text-muted hover:text-primary">
+            {SILO_META[silo].label}
+          </a>
+        ))
+      }
+      <a href="/departement/" class="text-text-muted hover:text-primary">Départements</a>
+      <ThemeToggle />
+    </nav>
+  </div>
+</header>

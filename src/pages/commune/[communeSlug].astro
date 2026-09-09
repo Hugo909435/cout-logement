@@ -1,0 +1,105 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SEO from '../../components/SEO.astro';
+import {
+  getPublishedCommunes,
+  getAllDepartements,
+  getCommunesFiscalesForDepartement,
+  isCommunePublished,
+  REI_MILLESIME,
+  REI_SOURCE,
+} from '../../lib/fiscaliteData';
+import { formatTaux, formatEuros, formatNombre } from '../../lib/numbers';
+
+export async function getStaticPaths() {
+  const departementsBySlug = new Map(getAllDepartements().map((d) => [d.code, d]));
+  return getPublishedCommunes().map((commune) => ({
+    params: { communeSlug: commune.slug },
+    props: { commune, departement: departementsBySlug.get(commune.codeDepartement) },
+  }));
+}
+
+const { commune, departement } = Astro.props;
+
+// Communes comparables : même département, taux voisin (2 au-dessus, 2 au-dessous).
+const communesDept = getCommunesFiscalesForDepartement(commune.codeDepartement);
+const idx = communesDept.findIndex((c) => c.code === commune.code);
+const comparables = communesDept
+  .filter((c, i) => c.code !== commune.code && Math.abs(i - idx) <= 3)
+  .filter(isCommunePublished)
+  .slice(0, 5);
+
+const description = `Taxe foncière à ${commune.nom} (${commune.code}) : taux de ${formatTaux(commune.fiscalite.tfpbTauxNet)} en ${REI_MILLESIME}, d'après le fichier REI de la DGFiP.`;
+---
+
+<BaseLayout>
+  <SEO
+    slot="head"
+    title={`Taxe foncière à ${commune.nom}`}
+    description={description}
+    path={`/commune/${commune.slug}/`}
+    breadcrumbs={[
+      { name: 'Accueil', path: '/' },
+      { name: 'Départements', path: '/departement/' },
+      ...(departement ? [{ name: departement.nom, path: `/departement/${departement.slug}/` }] : []),
+      { name: commune.nom, path: `/commune/${commune.slug}/` },
+    ]}
+  />
+  <p class="text-sm text-text-muted">
+    {departement && (
+      <>
+        <a href="/departement/" class="hover:text-primary">Départements</a> ·{' '}
+        <a href={`/departement/${departement.slug}/`} class="hover:text-primary">{departement.nom}</a>
+      </>
+    )}
+  </p>
+  <h1 class="mt-2 text-3xl font-semibold">Taxe foncière à {commune.nom}</h1>
+  <p class="mt-4 max-w-2xl text-text-muted">{description}</p>
+  {commune.population && (
+    <p class="mt-2 text-sm text-text-muted">
+      {formatNombre(commune.population)} habitants · code INSEE {commune.code}
+      {commune.codesPostaux.length > 0 && <> · {commune.codesPostaux.join(', ')}</>}
+    </p>
+  )}
+
+  <section class="mt-8 grid gap-4 sm:grid-cols-2">
+    <div class="rounded border border-border p-5">
+      <p class="text-sm text-text-muted">Taux net TFPB {REI_MILLESIME}</p>
+      <p class="mt-1 text-2xl font-semibold">{formatTaux(commune.fiscalite.tfpbTauxNet)}</p>
+    </div>
+    {commune.fiscalite.tfpbProduitReel !== null && (
+      <div class="rounded border border-border p-5">
+        <p class="text-sm text-text-muted">Produit perçu par la commune</p>
+        <p class="mt-1 text-2xl font-semibold">{formatEuros(commune.fiscalite.tfpbProduitReel)}</p>
+      </div>
+    )}
+  </section>
+
+  {commune.fiscalite.tfpbTauxVote !== null && commune.fiscalite.tfpbTauxVote !== commune.fiscalite.tfpbTauxNet && (
+    <p class="mt-4 text-sm text-text-muted">
+      Le taux voté par la commune ({formatTaux(commune.fiscalite.tfpbTauxVote)}) diffère du taux net appliqué
+      ci-dessus : cet écart correspond au dispositif d'intégration fiscale progressive (convergence des taux à la
+      suite d'une fusion de communes) — voir la <a href="/methodologie/" class="text-primary hover:underline">méthodologie</a>.
+    </p>
+  )}
+
+  {comparables.length > 0 && (
+    <section class="mt-10">
+      <h2 class="text-xl font-semibold">Communes voisines par le taux</h2>
+      <ul class="mt-4 space-y-2 text-sm">
+        {comparables.map((c) => (
+          <li>
+            <a href={`/commune/${c.slug}/`} class="text-primary hover:underline">{c.nom}</a>
+            <span class="text-text-muted"> — {formatTaux(c.fiscalite.tfpbTauxNet)}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  <p class="mt-10 border-t border-border pt-4 text-sm text-text-muted">
+    Chiffres issus de {REI_SOURCE}. Pour comprendre ce que recouvre ce taux, voir{' '}
+    <a href="/fiscalite-locale/comprendre-la-taxe-fonciere/" class="text-primary hover:underline">Comprendre la taxe foncière</a>,
+    et pour le détail des sources utilisées, la page <a href="/sources/" class="text-primary hover:underline">Sources officielles</a>.
+  </p>
+</BaseLayout>

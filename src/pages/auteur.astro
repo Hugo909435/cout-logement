@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SEO from '../components/SEO.astro';
+import { formatDateFr } from '../lib/dates';
+import { AUTHOR_NAME, AUTHOR_ROLE, AUTHOR_EMAIL, AUTHOR_PATH, AUTHOR_ID_FRAGMENT } from '../lib/author';
+
+const description =
+  'Qui écrit Cout Logement, ce que ce site publie et ce qu’il ne fait pas : pas de conseil fiscal, financier ou juridique personnalisé.';
+const updatedDate = new Date('2026-09-21');
+
+const authorId = new URL(`${AUTHOR_PATH}${AUTHOR_ID_FRAGMENT}`, Astro.site).toString();
+const personJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': authorId,
+  name: AUTHOR_NAME,
+  description: AUTHOR_ROLE,
+  email: `mailto:${AUTHOR_EMAIL}`,
+  url: new URL(AUTHOR_PATH, Astro.site).toString(),
+};
+---
+
+<BaseLayout>
+  <SEO slot="head" title="Qui écrit ce site" description={description} path="/auteur/" />
+  <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(personJsonLd)} />
+  <article class="article">
+    <span class="inline-flex items-center gap-2 rounded-full border border-brown/30 bg-brown/10 px-3 py-1 text-xs font-medium text-brown-strong">
+      Mis à jour le {formatDateFr(updatedDate)}
+    </span>
+    <h1 class="mt-4 text-3xl font-semibold">Qui écrit ce site</h1>
+    <div class="brand-bar mt-4 max-w-24"></div>
+
+    <p>
+      Ce site est écrit et maintenu par <strong>{AUTHOR_NAME}</strong>. Je n'ai inventé aucune
+      persona ni aucun titre professionnel que je ne détiens pas : je suis développeur, et c'est
+      en tant que développeur que je construis et que je maintiens les jeux de données publiés
+      ici, à partir des sources listées sur la page <a href="/sources/">Sources officielles</a>.
+    </p>
+
+    <p>
+      Je ne suis ni fiscaliste, ni conseiller en gestion de patrimoine, ni avocat. L'autorité de
+      ce site ne vient pas d'un diplôme que je n'ai pas, elle vient de la donnée : chaque chiffre
+      cité est traçable jusqu'à une source officielle nommée, avec son millésime, sa fréquence de
+      mise à jour et les limites décrites sur la page <a href="/methodologie/">Méthodologie</a>.
+      Je préfère l'assumer plutôt que de me présenter comme un expert que je ne suis pas.
+    </p>
+
+    <h2>Ce que ce site fait</h2>
+    <p>
+      Cout Logement publie des données publiques et des faits sourcés sur la fiscalité locale,
+      l'énergie du logement et les aides à la rénovation, mis en forme pour être lisibles sans
+      avoir à ouvrir un fichier statistique.
+    </p>
+
+    <h2>Ce que ce site ne fait pas</h2>
+    <div class="callout">
+      <p>
+        <strong>
+          Ce site ne délivre aucun conseil fiscal, financier ou juridique personnalisé.
+        </strong>
+      </p>
+      <p>
+        Ce que vous lisez ici décrit une règle générale ou un chiffre agrégé, pas votre situation.
+        Pour une décision qui vous concerne, rapprochez-vous de l'administration compétente ou
+        d'un professionnel qualifié.
+      </p>
+    </div>
+
+    <h2>Contact</h2>
+    <div class="card">
+      <p>
+        Une erreur, une source à ajouter, une question sur une donnée : écrivez-moi à
+        <a href={`mailto:${AUTHOR_EMAIL}`}>{AUTHOR_EMAIL}</a>.
+      </p>
+    </div>
+  </article>
+</BaseLayout>

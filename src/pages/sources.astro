@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SEO from '../components/SEO.astro';
+import { formatDateFr } from '../lib/dates';
+import { SOURCES } from '../lib/sources';
+
+const description =
+  'La liste complète et à jour des organismes officiels que Cout Logement peut citer, avec le millésime en ligne et la fréquence de mise à jour de chacun.';
+const updatedDate = new Date('2026-09-21');
+---
+
+<BaseLayout>
+  <SEO slot="head" title="Sources officielles" description={description} path="/sources/" />
+  <article class="prose prose-neutral max-w-none">
+    <p class="text-sm font-medium text-accent">Mis à jour le {formatDateFr(updatedDate)}</p>
+    <h1 class="mt-2 text-3xl font-semibold">Sources officielles</h1>
+
+    <p>
+      Voici la liste complète des organismes dont les données ou les textes peuvent être cités
+      sur Cout Logement. Aucune autre source ne figure dans un article sans être ajoutée ici au
+      préalable, avec son millésime et sa fréquence de mise à jour. Le détail de la manière dont
+      nous exploitons ces jeux de données se trouve sur la page
+      <a href="/methodologie/">Méthodologie</a>.
+    </p>
+
+    <div class="overflow-x-auto">
+      <table class="mt-6 w-full border-collapse text-left text-sm">
+        <thead>
+          <tr class="border-b border-border">
+            <th class="py-2 pr-4">Source</th>
+            <th class="py-2 pr-4">Organisme</th>
+            <th class="py-2 pr-4">Ce qu'elle fournit</th>
+            <th class="py-2 pr-4">Millésime en ligne</th>
+            <th class="py-2">Fréquence</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            SOURCES.map((source) => (
+              <tr class="border-b border-border align-top">
+                <td class="py-2 pr-4 font-medium">{source.nom}</td>
+                <td class="py-2 pr-4 text-text-muted">{source.organisme}</td>
+                <td class="py-2 pr-4 text-text-muted">{source.fournit}</td>
+                <td class="py-2 pr-4 text-text-muted">{source.millesime}</td>
+                <td class="py-2 text-text-muted">{source.frequence}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <p class="mt-6">
+      Cette liste sera mise à jour chaque fois qu'une nouvelle source est ajoutée, ou qu'un
+      millésime cité dans un article change. Si vous repérez un chiffre attribué à une source qui
+      ne figure pas ci-dessus, signalez-le nous via la page
+      <a href="/auteur/">Qui écrit ce site</a>.
+    </p>
+  </article>
+</BaseLayout>

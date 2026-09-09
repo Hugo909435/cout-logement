@@ -1,0 +1,33 @@
+{
+  "name": "cout-logement",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "node scripts/validate-content.mjs && astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "validate:content": "node scripts/validate-content.mjs",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^4.3.14",
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.4",
+    "@tailwindcss/vite": "4.1.18",
+    "astro": "5.18.2",
+    "mdast-util-to-string": "^4.0.0",
+    "tailwindcss": "4.1.18"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "gray-matter": "^4.0.3",
+    "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "vite": "6.4.3"
+  }
+}

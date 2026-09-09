@@ -1,0 +1,135 @@
+---
+import { AUTHOR_PATH, AUTHOR_ID_FRAGMENT } from '../lib/author';
+
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+export interface ArticleMeta {
+  author: string;
+  publishDate: Date;
+  updatedDate: Date;
+}
+
+export interface BreadcrumbItem {
+  name: string;
+  path: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  /** false sur l'accueil pour ne pas suffixer le nom du site. */
+  appendSiteName?: boolean;
+  image?: string;
+  article?: ArticleMeta;
+  faq?: FaqItem[];
+  /** Fil d'Ariane, de la racine à la page courante (racine exclue du JSON-LD si non fournie). */
+  breadcrumbs?: BreadcrumbItem[];
+}
+
+const SITE_NAME = 'Cout Logement';
+const DEFAULT_IMAGE = '/og-default.svg';
+
+const {
+  title,
+  description,
+  path,
+  appendSiteName = true,
+  image = DEFAULT_IMAGE,
+  article,
+  faq,
+  breadcrumbs,
+} = Astro.props;
+
+const canonicalURL = new URL(path, Astro.site);
+const imageURL = new URL(image, Astro.site);
+const authorId = new URL(`${AUTHOR_PATH}${AUTHOR_ID_FRAGMENT}`, Astro.site).toString();
+const pageTitle = appendSiteName ? `${title} · ${SITE_NAME}` : title;
+
+const articleJsonLd = article
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: title,
+      description,
+      image: imageURL.toString(),
+      author: {
+        '@type': 'Person',
+        '@id': authorId,
+        name: article.author,
+      },
+      datePublished: article.publishDate.toISOString(),
+      dateModified: article.updatedDate.toISOString(),
+      mainEntityOfPage: canonicalURL.toString(),
+      publisher: {
+        '@type': 'Organization',
+        name: SITE_NAME,
+      },
+    }
+  : null;
+
+const breadcrumbJsonLd =
+  breadcrumbs && breadcrumbs.length > 0
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: breadcrumbs.map((item, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          name: item.name,
+          item: new URL(item.path, Astro.site).toString(),
+        })),
+      }
+    : null;
+
+const faqJsonLd =
+  faq && faq.length > 0
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faq.map((item) => ({
+          '@type': 'Question',
+          name: item.question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: item.answer,
+          },
+        })),
+      }
+    : null;
+---
+
+<title>{pageTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalURL} />
+
+<meta property="og:type" content={article ? 'article' : 'website'} />
+<meta property="og:site_name" content={SITE_NAME} />
+<meta property="og:title" content={pageTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:image" content={imageURL} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={pageTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageURL} />
+
+{
+  articleJsonLd && (
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(articleJsonLd)} />
+  )
+}
+{
+  faqJsonLd && (
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(faqJsonLd)} />
+  )
+}
+{
+  breadcrumbJsonLd && (
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbJsonLd)} />
+  )
+}

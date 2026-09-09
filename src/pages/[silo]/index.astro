@@ -1,0 +1,65 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SEO from '../../components/SEO.astro';
+import { SILO_META, SILO_ORDER } from '../../lib/silos';
+import type { Silo } from '../../content.config';
+
+export async function getStaticPaths() {
+  return SILO_ORDER.map((silo) => ({ params: { silo } }));
+}
+
+const { silo } = Astro.params as { silo: Silo };
+const meta = SILO_META[silo];
+
+const piliers = (await getCollection('piliers', ({ data }) => !data.draft && data.silo === silo)).sort(
+  (a, b) => a.data.title.localeCompare(b.data.title)
+);
+const satellites = (await getCollection('blog', ({ data }) => !data.draft && data.silo === silo)).sort(
+  (a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf()
+);
+---
+
+<BaseLayout>
+  <SEO slot="head" title={meta.label} description={meta.description} path={`/${silo}/`} />
+  <h1 class="text-3xl font-semibold">{meta.label}</h1>
+  <p class="mt-2 text-text-muted">{meta.description}</p>
+
+  <section class="mt-8">
+    <h2 class="text-xl font-semibold">Piliers</h2>
+    {
+      piliers.length === 0 ? (
+        <p class="mt-2 text-sm text-text-muted">Aucun pilier publié pour le moment.</p>
+      ) : (
+        <ul class="mt-4 space-y-2">
+          {piliers.map((pilier) => (
+            <li>
+              <a href={`/${silo}/${pilier.id}/`} class="text-primary hover:underline">
+                {pilier.data.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </section>
+
+  <section class="mt-8">
+    <h2 class="text-xl font-semibold">Articles</h2>
+    {
+      satellites.length === 0 ? (
+        <p class="mt-2 text-sm text-text-muted">Aucun article publié pour le moment.</p>
+      ) : (
+        <ul class="mt-4 space-y-2">
+          {satellites.map((post) => (
+            <li>
+              <a href={`/${silo}/${post.id}/`} class="text-primary hover:underline">
+                {post.data.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </section>
+</BaseLayout>

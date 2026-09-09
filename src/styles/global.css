@@ -1,0 +1,199 @@
+@import 'tailwindcss';
+
+/*
+  Palette « Cout Logement » — distincte de mon-carburant.com.
+  Sobriété financière : bleu-pétrole profond + accent cuivre (toiture / cadastre).
+  Contraste texte/fond vérifié >= 4.5:1 dans les deux thèmes.
+*/
+:root {
+  --color-bg: #fbfaf7;
+  --color-bg-elevated: #ffffff;
+  --color-text: #1a2b2f;
+  --color-text-muted: #4a5a5e;
+  --color-border: #dcd6c9;
+  --color-primary: #0f4c52;
+  --color-primary-strong: #0a3539;
+  --color-accent: #b5651d;
+  --color-accent-strong: #8f4e16;
+  --color-focus: #0f4c52;
+  --color-brown: #6b4226;
+  --color-brown-strong: #4a2c1a;
+
+  --font-display: 'Fraunces', 'Georgia', serif;
+  --font-body: 'Public Sans', 'Segoe UI', system-ui, sans-serif;
+
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --color-bg: #10181a;
+  --color-bg-elevated: #172325;
+  --color-text: #eef2f0;
+  --color-text-muted: #a9b7b5;
+  --color-border: #2c3b3e;
+  --color-primary: #6fc6bf;
+  --color-primary-strong: #93d9d3;
+  --color-accent: #e3a15c;
+  --color-accent-strong: #f0b878;
+  --color-focus: #6fc6bf;
+  --color-brown: #c9a173;
+  --color-brown-strong: #e0bd8f;
+
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']):not([data-theme='dark']) {
+    --color-bg: #10181a;
+    --color-bg-elevated: #172325;
+    --color-text: #eef2f0;
+    --color-text-muted: #a9b7b5;
+    --color-border: #2c3b3e;
+    --color-primary: #6fc6bf;
+    --color-primary-strong: #93d9d3;
+    --color-accent: #e3a15c;
+    --color-accent-strong: #f0b878;
+    --color-focus: #6fc6bf;
+    --color-brown: #c9a173;
+    --color-brown-strong: #e0bd8f;
+
+    color-scheme: dark;
+  }
+}
+
+@theme {
+  --color-bg: var(--color-bg);
+  --color-bg-elevated: var(--color-bg-elevated);
+  --color-text: var(--color-text);
+  --color-text-muted: var(--color-text-muted);
+  --color-border: var(--color-border);
+  --color-primary: var(--color-primary);
+  --color-primary-strong: var(--color-primary-strong);
+  --color-accent: var(--color-accent);
+  --color-accent-strong: var(--color-accent-strong);
+  --color-brown: var(--color-brown);
+  --color-brown-strong: var(--color-brown-strong);
+
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+}
+
+html {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.brand-bar {
+  height: 3px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in srgb, var(--color-brown) 70%, transparent),
+    transparent
+  );
+}
+
+@layer components {
+  .article {
+    max-width: 42rem;
+  }
+
+  .article h2 {
+    margin-top: 2.5rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    font-family: var(--font-display);
+    font-size: 1.375rem;
+    font-weight: 600;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .article h2:first-of-type {
+    margin-top: 2.25rem;
+  }
+
+  .article p {
+    margin-top: 1rem;
+    line-height: 1.75;
+    color: var(--color-text);
+  }
+
+  .article ul {
+    margin-top: 1rem;
+    padding-left: 1.25rem;
+    list-style: disc;
+    color: var(--color-text);
+  }
+
+  .article li + li {
+    margin-top: 0.5rem;
+  }
+
+  .article a {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-decoration-color: var(--color-border);
+    text-underline-offset: 2px;
+  }
+
+  .article a:hover {
+    color: var(--color-accent);
+    text-decoration-color: currentColor;
+  }
+
+  .article strong {
+    font-weight: 600;
+  }
+
+  .article .callout {
+    margin-top: 1.5rem;
+    border-left: 3px solid var(--color-brown);
+    background: color-mix(in srgb, var(--color-brown) 8%, var(--color-bg-elevated));
+    padding: 1rem 1.25rem;
+    border-radius: 0 0.5rem 0.5rem 0;
+  }
+
+  .article .callout p {
+    margin-top: 0;
+  }
+
+  .article .callout strong {
+    color: var(--color-brown-strong);
+  }
+
+  .article .card {
+    margin-top: 1.5rem;
+    border: 1px solid var(--color-border);
+    border-top: 3px solid var(--color-brown);
+    border-radius: 0.5rem;
+    padding: 1.25rem 1.5rem;
+    background: var(--color-bg-elevated);
+  }
+
+  .article .card p {
+    margin-top: 0.5rem;
+  }
+
+  .article .card p:first-child {
+    margin-top: 0;
+  }
+}

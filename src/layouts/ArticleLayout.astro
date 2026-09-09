@@ -1,0 +1,64 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import SEO, { type FaqItem } from '../components/SEO.astro';
+import { SILO_META } from '../lib/silos';
+import { formatDateFr } from '../lib/dates';
+import { AUTHOR_PATH } from '../lib/author';
+import type { Silo } from '../content.config';
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  silo: Silo;
+  author: string;
+  publishDate: Date;
+  updatedDate: Date;
+  tags: string[];
+  heroImage: string;
+  faq?: FaqItem[];
+}
+
+const { title, description, path, silo, author, publishDate, updatedDate, tags, heroImage, faq } =
+  Astro.props;
+---
+
+<BaseLayout>
+  <SEO
+    slot="head"
+    title={title}
+    description={description}
+    path={path}
+    image={heroImage}
+    article={{ author, publishDate, updatedDate }}
+    faq={faq}
+  />
+  <article>
+    <p class="text-sm text-text-muted">
+      <a href={`/${silo}/`} class="hover:text-primary">{SILO_META[silo].label}</a>
+    </p>
+    <h1 class="mt-2 text-3xl font-semibold">{title}</h1>
+    <p class="mt-4 text-sm text-text-muted">
+      Par <a href={AUTHOR_PATH} class="hover:text-primary">{author}</a> · Publié le {formatDateFr(publishDate)}
+    </p>
+    <p class="mt-1 text-sm font-medium text-accent">
+      Mis à jour le {formatDateFr(updatedDate)}
+    </p>
+    {
+      tags.length > 0 && (
+        <ul class="mt-4 flex flex-wrap gap-2 text-xs text-text-muted">
+          {tags.map((tag) => (
+            <li class="rounded border border-border px-2 py-1">{tag}</li>
+          ))}
+        </ul>
+      )
+    }
+    <div class="prose prose-neutral mt-8 max-w-none">
+      <slot />
+    </div>
+    <p class="mt-10 border-t border-border pt-4 text-sm text-text-muted">
+      Chiffres et barèmes vérifiés selon notre <a href="/methodologie/" class="text-primary hover:underline">méthodologie</a>,
+      à partir de nos <a href="/sources/" class="text-primary hover:underline">sources officielles</a>.
+    </p>
+  </article>
+</BaseLayout>

@@ -1,0 +1,121 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SEO from '../components/SEO.astro';
+import { formatDateFr } from '../lib/dates';
+
+const description =
+  'Les jeux de données officiels utilisés par Cout Logement, leur millésime, leur fréquence de mise à jour et les limites que nous assumons.';
+const updatedDate = new Date('2026-09-21');
+---
+
+<BaseLayout>
+  <SEO slot="head" title="Méthodologie : d'où viennent nos chiffres" description={description} path="/methodologie/" />
+  <article class="prose prose-neutral max-w-none">
+    <p class="text-sm font-medium text-accent">Mis à jour le {formatDateFr(updatedDate)}</p>
+    <h1 class="mt-2 text-3xl font-semibold">Méthodologie : d'où viennent nos chiffres</h1>
+
+    <p>
+      Cout Logement ne produit aucune donnée. Nous reprenons des jeux de données publics,
+      publiés par des administrations identifiées, et nous les mettons en forme pour qu'ils
+      soient lisibles par un propriétaire ou un locataire qui n'a pas le temps d'ouvrir un
+      fichier CSV de plusieurs centaines de milliers de lignes. Cette page décrit précisément
+      ce que nous utilisons, la version de chaque jeu de données, et ce qu'il ne faut pas en
+      attendre.
+    </p>
+
+    <h2>Les jeux de données utilisés</h2>
+
+    <p>
+      <strong>Le fichier REI de la DGFiP</strong> (recensement des éléments d'imposition à la
+      fiscalité directe locale) nous donne, commune par commune, les taux et les produits votés
+      de taxe foncière et des autres impôts locaux. Le millésime actuellement en ligne est
+      l'exercice 2025 ; la DGFiP publie ce fichier une fois par an, généralement au printemps
+      suivant l'exercice concerné.
+    </p>
+
+    <p>
+      <strong>Les DVF (demandes de valeurs foncières)</strong>, également publiées par la DGFiP
+      via le portail cadastre.data.gouv.fr, nous servent à situer un logement par rapport aux prix
+      réellement constatés dans sa commune. Les transactions en ligne remontent jusqu'à avril 2026.
+      Ce fichier est republié deux fois par an, en avril et en octobre.
+    </p>
+
+    <p>
+      <strong>L'API DPE de l'ADEME</strong> nous fournit les diagnostics de performance
+      énergétique des logements existants, déclarés depuis juillet 2021. L'ADEME met ce jeu de
+      données à jour chaque mois.
+    </p>
+
+    <p>
+      <strong>Les barèmes de France Rénov'</strong> (MaPrimeRénov' et aides associées), et les
+      textes publiés au <strong>Journal officiel</strong> qui les fixent, nous donnent les
+      montants d'aide à la rénovation en vigueur. Le barème actuellement décrit sur ce site est
+      celui applicable depuis le 1er septembre 2026, issu du décret n° 2026-822 du 25 août 2026 et
+      de l'arrêté paru au Journal officiel le 27 août 2026. Contrairement aux trois jeux de
+      données précédents, ces textes ne suivent pas un calendrier fixe : ils changent chaque fois
+      qu'un arrêté est publié.
+    </p>
+
+    <p>
+      La liste complète des organismes que nous citons, avec le millésime en ligne de chacun,
+      figure sur la page <a href="/sources/">Sources officielles</a>.
+    </p>
+
+    <h2>Comment nous traitons ces données</h2>
+
+    <p>
+      Nous agrégeons les fichiers sources à l'échelle de la commune, en utilisant le code INSEE
+      comme clé de rapprochement entre les jeux de données. Les montants monétaires sont arrondis
+      à l'euro le plus proche, les taux à un dixième de point de pourcentage. Quand plusieurs
+      lignes existent pour une même commune dans un fichier source (rattachement à plusieurs
+      syndicats intercommunaux, par exemple), nous retenons la ligne correspondant à la fiscalité
+      communale principale et l'indiquons dans le texte de la page concernée.
+    </p>
+
+    <p>
+      Nous excluons les lignes dont un champ obligatoire au calcul est manquant plutôt que de le
+      remplacer par une estimation. Une commune peut ainsi apparaître avec une donnée manquante
+      plutôt qu'avec un chiffre approximatif présenté comme certain.
+    </p>
+
+    <h2>Les limites, franchement</h2>
+
+    <p>
+      Ce que nos chiffres ne disent pas nous semble aussi important que ce qu'ils disent.
+    </p>
+
+    <ul>
+      <li>
+        Les DVF ne couvrent pas l'Alsace-Moselle, qui relève du régime du livre foncier, ni Mayotte.
+        Pour les communes de ces territoires, nous ne pouvons pas afficher de prix de transaction
+        issu de cette source.
+      </li>
+      <li>
+        Les DPE présents dans le jeu de données de l'ADEME sont des données déclaratives : elles
+        sont saisies par les diagnostiqueurs et ne sont pas vérifiées individuellement par
+        l'ADEME. Une moyenne communale calculée à partir de ces DPE reflète les diagnostics
+        transmis, pas un contrôle de terrain.
+      </li>
+      <li>
+        Le fichier REI est publié avec un décalage d'environ un an sur l'exercice fiscal réel :
+        les taux affichés pour l'exercice 2025 correspondent aux taux votés en 2025, pas
+        nécessairement à ceux appliqués l'année de votre lecture.
+      </li>
+      <li>
+        Les barèmes d'aide à la rénovation peuvent changer entre deux mises à jour de cette page.
+        Un montant cité ici reste celui en vigueur au 1er septembre 2026 : vérifiez la date de
+        mise à jour en haut de cette page avant de vous y fier pour une décision.
+      </li>
+      <li>
+        À ce stade, aucune page par commune n'est encore publiée sur ce site : cette méthodologie
+        décrit les sources et le traitement que nous appliquerons dès leur mise en ligne, avant
+        la publication du premier article de contenu.
+      </li>
+    </ul>
+
+    <p>
+      Si un chiffre que vous lisez sur ce site vous semble faux ou périmé, la page
+      <a href="/auteur/">Qui écrit ce site</a> indique comment nous contacter.
+    </p>
+  </article>
+</BaseLayout>

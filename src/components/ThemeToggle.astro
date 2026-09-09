@@ -1,0 +1,43 @@
+---
+---
+
+<button
+  id="theme-toggle"
+  type="button"
+  aria-label="Basculer le thème clair/sombre"
+  class="rounded border border-border px-3 py-1.5 text-sm text-text hover:border-primary"
+>
+  <span id="theme-toggle-label">Thème</span>
+</button>
+
+<script is:inline>
+  (function () {
+    const button = document.getElementById('theme-toggle');
+    const label = document.getElementById('theme-toggle-label');
+    const root = document.documentElement;
+
+    function currentTheme() {
+      return root.getAttribute('data-theme') || 'auto';
+    }
+
+    function render() {
+      const theme = currentTheme();
+      label.textContent = theme === 'dark' ? 'Sombre' : theme === 'light' ? 'Clair' : 'Auto';
+    }
+
+    button.addEventListener('click', () => {
+      const theme = currentTheme();
+      const next = theme === 'light' ? 'dark' : theme === 'dark' ? 'auto' : 'light';
+      if (next === 'auto') {
+        root.removeAttribute('data-theme');
+        localStorage.removeItem('theme');
+      } else {
+        root.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+      }
+      render();
+    });
+
+    render();
+  })();
+</script>
